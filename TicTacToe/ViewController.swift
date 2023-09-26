@@ -17,8 +17,6 @@ class ViewController: UIViewController
     }
     
     
-    
-    
     @IBOutlet weak var turnLabel: UILabel!
     
     @IBOutlet weak var a1: UIButton!
@@ -36,7 +34,6 @@ class ViewController: UIViewController
     
     
     // declare variables
-    
     var firstTurn = Turn.Cross// who will go first
     var currentTurn = Turn.Cross //will decide the current turn
     
@@ -79,6 +76,21 @@ class ViewController: UIViewController
         }
     }
     
+    
+    // create an boolean to check if empty spacxe on the board and return true
+    // if true = Draw
+    // if false loop til -> true
+    func fullBoard() -> Bool{
+        for button in board
+        {
+            if button.title(for: .normal) == nil
+            {
+            return false
+            }
+        }
+        return true
+    }
+    
 
     
     override func viewDidLoad() {
@@ -86,6 +98,7 @@ class ViewController: UIViewController
         initBoard()
     }
     
+    // Appenda buttons i board arrayen
     func initBoard(){
         
         board.append(a1)
@@ -101,8 +114,9 @@ class ViewController: UIViewController
     }
     
     
+  
     
-    
+
     
     func checkForWinner(_ s :String) -> Bool
     {
@@ -155,7 +169,8 @@ class ViewController: UIViewController
     
     
     
-    
+    // takes two parameters UIButton och string
+    // Returns en booleon to see if button and symbol match
     func thisSymbol(_ button: UIButton, _ symbol: String) -> Bool
     {
         return button.title(for: .normal) == symbol
@@ -163,22 +178,67 @@ class ViewController: UIViewController
     
     
     
+
     // send the result as an alert w reset button
     func resultAlert(title:String)
     {
-        
-        
+       
         sendScoreToDiscord()
        
         let message = "\n\(noughtNameTextField.text ?? "Nought"): \(noughtScore)\n\n\(crossNameTextField.text ?? "Cross"): \(crossScore)"
         
+        // pop up alert, returns Message
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
-            self.resetBoard()
+            self.resetBoard()//button to calla på handler--> resetBoard
         }))
-        self.present(ac, animated: true)
+        self.present(ac, animated: true)// simple animation
         
     }
+    
+    //add to board check if Buttons == empty, if so, place X or O
+    //change to the nextplayer, and updt text
+    //false enable so u cant press same button twice
+    
+    func addToBoard(_ sender: UIButton) {
+            if sender.title(for: .normal) == nil// If button is empty --> continue
+        {
+                if currentTurn == Turn.Nought//if CurrentTurn == Nought --> Turn to play
+                {
+                    sender.setTitle("O", for: .normal)//set title to O
+                    currentTurn = Turn.Cross//change turn
+                    turnLabel.text = crossNameTextField.text ?? "Cross"//updt text to tornLable and username
+                }
+                else if currentTurn == Turn.Cross// if CurrentTurn == Cross --> continue
+                {
+                    sender.setTitle("X", for: .normal)//set title to X
+                    currentTurn = Turn.Nought//change turn
+                    turnLabel.text = noughtNameTextField.text ?? "Nought"//updt text to turnlable
+                }
+                sender.isEnabled = false // Cant press the same button twice and To remove animation if it is already pressed
+            }
+        }
+    
+    
+    
+    // for loop to iterate thru board buttons
+    func resetBoard() {
+           for button in board {
+               button.setTitle(nil, for: .normal)// sätt alla buttons till nil
+               button.isEnabled = true // make button eneble to use again
+           }
+           
+        
+           let noughtName = noughtNameTextField.text ?? "Nought"
+           let crossName = crossNameTextField.text ?? "Cross"
+           
+           turnLabel.text = firstTurn == Turn.Nought ? noughtName : crossName
+           currentTurn = firstTurn // first enum starts
+       }
+    
+    
+    
+    
     
     
     
@@ -194,8 +254,6 @@ class ViewController: UIViewController
         //create data for discord
         //construct the message content that will be sent to Discord.
         //creates two strings, noughtScoreText and crossScoreText,
-        
-        
         let noughtName = noughtNameTextField.text ?? "Nought"
         let crossName = crossNameTextField.text ?? "Cross"
 
@@ -244,57 +302,5 @@ class ViewController: UIViewController
             }
         }
     }
-
-
-    
-    func resetBoard() {
-           for button in board {
-               button.setTitle(nil, for: .normal)
-               button.isEnabled = true
-           }
-           
-           let noughtName = noughtNameTextField.text ?? "Nought"
-           let crossName = crossNameTextField.text ?? "Cross"
-           
-           turnLabel.text = firstTurn == Turn.Nought ? noughtName : crossName
-           currentTurn = firstTurn
-       }
-
-
-
-
-    
-    
-    
-    // create an boolean to check if empty spacxe on the board
-    func fullBoard() -> Bool{
-        for button in board
-        {
-            if button.title(for: .normal) == nil
-            {
-            return false
-            }
-        }
-        return true
-    }
-    
-    
-
-    func addToBoard(_ sender: UIButton) {
-            if sender.title(for: .normal) == nil {
-                if currentTurn == Turn.Nought {
-                    sender.setTitle("O", for: .normal)
-                    currentTurn = Turn.Cross
-                    turnLabel.text = crossNameTextField.text ?? "Cross"
-                } else if currentTurn == Turn.Cross {
-                    sender.setTitle("X", for: .normal)
-                    currentTurn = Turn.Nought
-                    turnLabel.text = noughtNameTextField.text ?? "Nought"
-                }
-                sender.isEnabled = false // To remove animation if it is already pressed
-            }
-        }
-    
-    
 }
 
