@@ -95,6 +95,17 @@ class ViewController: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    
+           if noughtNameTextField.text?.isEmpty ?? true {
+               noughtNameTextField.text = "O" // O = defult
+           }
+           
+           if crossNameTextField.text?.isEmpty ?? true {
+               crossNameTextField.text = "X" // X = defult
+           }
+           
+        
         initBoard()
     }
     
@@ -262,7 +273,10 @@ class ViewController: UIViewController
 
         
         
-        let message = "\(noughtScoreText)\n\(crossScoreText)"
+        /// Ahmad, om du vill sicka en rolig notis till mig Byt ut $$$$ nedanför till något roligt :)
+        
+        let message = "\(noughtScoreText)\n\(crossScoreText)\n\("$$$$")"
+        
         
         
         // check if the url is valid
